@@ -20,14 +20,17 @@ function fetchTopic(topic, callback){
     fetchTweets.byTopic(topic, callback);
 }
 
-fetchTopic('coldplay', function(){});
 
 const TweetType = new GraphQLObjectType({
     name: 'Tweet',
     description: '...',
     fields: () => ({
-        name: {
-            type: GraphQLString
+        text: {
+            type: GraphQLString,
+            resolve: (tweet) => {
+                console.log(tweet);
+                return tweet;
+            }
         }
     })
 })
@@ -40,6 +43,13 @@ module.exports = new GraphQLSchema({
             tweet: {
                 type: TweetType,
                 args: {
+                    topic: { type: GraphQLString }
+                },
+                resolve: (root, args) => {
+                    fetchTopic(args.topic, (tweets) => {
+                        console.log(tweets.statuses[0])
+                        return tweets.statuses[0];
+                    })
                 }
             }
         })
