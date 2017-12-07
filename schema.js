@@ -24,6 +24,10 @@ const TweetType = new GraphQLObjectType({
         text: {
             type: GraphQLString
         },
+        user: {
+            type: GraphQLString,
+            resolve: (tweet) => tweet.user.name
+        }
     })
 })
 
