@@ -6,9 +6,6 @@ const schema = require('./schema');
 app.use('/graphql', graphqlHTTP({
     schema,
     graphiql: true
-}))
-schema('hello', function(res){
-    console.log(JSON.stringify(res))
-})
+}));
 app.listen(4001);
 console.log('Listening on 4001');
