@@ -1,25 +1,20 @@
-var FetchTweets = require('fetch-tweets'); // Include the module 
-var keys = require('./apiKeys.js');
+const {fetchTweets} = require('./getTweets.js');
 const {
     GraphQLSchema,
     GraphQLObjectType,
     GraphQLString,
     GraphQLInt
 } = require('graphql');
- 
-// Specify Twitter keys (preferably in an external .gitignore'd file) 
-var apiKeys = {
+const keys = require('./apiKeys.js');
+
+const apiKeys = {
     consumer_key : keys.key,
     consumer_secret : keys.secret
 };
  
-// Create a new object and pass in keys and optional additional options (see below) 
-var fetchTweets = new FetchTweets(apiKeys, false); 
-
-function fetchTopic(topic, callback){
-    fetchTweets.byTopic(topic, callback);
+function fetchTopic(topic){
+    return fetchTweets(apiKeys, topic);
 }
-
 
 const TweetType = new GraphQLObjectType({
     name: 'Tweet',
@@ -29,7 +24,7 @@ const TweetType = new GraphQLObjectType({
             type: GraphQLString,
             resolve: (tweet) => {
                 console.log(tweet);
-                return tweet;
+                return tweet.text;
             }
         }
     })
@@ -46,10 +41,9 @@ module.exports = new GraphQLSchema({
                     topic: { type: GraphQLString }
                 },
                 resolve: (root, args) => {
-                    fetchTopic(args.topic, (tweets) => {
-                        console.log(tweets.statuses[0])
+                    return fetchTopic(args.topic).then((tweets) => {
                         return tweets.statuses[0];
-                    })
+                    }).catch(() => {})
                 }
             }
         })
