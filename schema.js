@@ -17,6 +17,16 @@ function fetchTopic(topic){
     return fetchTweets(apiKeys, topic);
 }
 
+const UserType = new GraphQLObjectType({
+    name: 'User',
+    description: '...',
+    fields: () => ({
+        name: {
+            type: GraphQLString
+        },
+    })
+})
+
 const TweetType = new GraphQLObjectType({
     name: 'Tweet',
     description: '...',
@@ -24,9 +34,12 @@ const TweetType = new GraphQLObjectType({
         text: {
             type: GraphQLString
         },
-        user: {
+        date: {
             type: GraphQLString,
-            resolve: (tweet) => tweet.user.name
+            resolve: (tweet) => tweet.created_at
+        },
+        user: {
+            type: UserType
         }
     })
 })
