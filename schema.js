@@ -2,6 +2,7 @@ const {fetchTweets} = require('./getTweets.js');
 const {
     GraphQLSchema,
     GraphQLObjectType,
+    GraphQLList,
     GraphQLString,
     GraphQLInt
 } = require('graphql');
@@ -21,12 +22,8 @@ const TweetType = new GraphQLObjectType({
     description: '...',
     fields: () => ({
         text: {
-            type: GraphQLString,
-            resolve: (tweet) => {
-                console.log(tweet);
-                return tweet.text;
-            }
-        }
+            type: GraphQLString
+        },
     })
 })
 
@@ -36,13 +33,13 @@ module.exports = new GraphQLSchema({
         description: '...',
         fields: () => ({
             tweet: {
-                type: TweetType,
+                type: new GraphQLList(TweetType),
                 args: {
                     topic: { type: GraphQLString }
                 },
                 resolve: (root, args) => {
                     return fetchTopic(args.topic).then((tweets) => {
-                        return tweets.statuses[0];
+                        return tweets.statuses;
                     }).catch(() => {})
                 }
             }
