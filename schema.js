@@ -24,6 +24,10 @@ const UserType = new GraphQLObjectType({
         name: {
             type: GraphQLString
         },
+        image: {
+            type: GraphQLString,
+            resolve: (user) => user.profile_image_url
+        }
     })
 })
 
